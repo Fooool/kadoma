@@ -5,6 +5,14 @@ Kadoma is a Python library designed to provide control over the Daikin BRC1H fam
 Original [README](README.pymadoka.md) included for reference.
 
 
+![GitHub Release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/ldotlopez/kadoma?include_prereleases)
+[![Create release](https://github.com/ldotlopez/kadoma/actions/workflows/release.yml/badge.svg)](https://github.com/ldotlopez/kadoma/actions/workflows/release.yml)
+[![Upload Python package](https://github.com/ldotlopez/kadoma/actions/workflows/publish.yml/badge.svg)](https://github.com/ldotlopez/kadoma/actions/workflows/publish.yml)
+
+<!-- Sponsors -->
+<a href="https://www.buymeacoffee.com/zepolson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 30px !important;width: 105px !important;" ></a>
+
+
 ## Why Kadoma? The rationale behind the fork and a rewrite
 
 The journey to Kadoma started when attempting to integrate Daikin BRC1H units into [Home Assistant](https://www.home-assistant.io/). While existing efforts, such as the [daikin_madoka integration](https://github.com/mduran80/daikin_madoka), were noted, personal experience revealed persistent challenges and inconsistencies that hindered reliable operation.
