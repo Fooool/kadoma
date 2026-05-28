@@ -64,7 +64,10 @@ async def get_transport(
 
     async with BleakClient(address_or_ble_device, timeout=timeout) as client:
         # Little hack to make property' name' available on the BleakClient
-        setattr(client, "name", getattr(client, "name", address_or_ble_device.name))
+        try:
+            setattr(client, "name", getattr(client, "name", address_or_ble_device.name))
+        except AttributeError:
+            pass
 
         async with Transport(client) as transport:
             yield transport
