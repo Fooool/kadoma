@@ -31,6 +31,7 @@ from bleak import BleakClient, BleakScanner
 from bleak.backends.characteristic import BleakGATTCharacteristic
 from bleak.backends.device import BLEDevice
 from bleak.exc import BleakDeviceNotFoundError
+from bleak_retry_connector import BleakClientWithServiceCache, establish_connection
 
 from .consts import BLUETOOTH_TIMEOUT, NOTIFY_CHAR_UUID, WRITE_CHAR_UUID
 
@@ -62,15 +63,20 @@ async def get_transport(
     else:
         raise TypeError(address_or_ble_device)
 
-    async with BleakClient(address_or_ble_device, timeout=timeout) as client:
-        # Little hack to make property' name' available on the BleakClient
-        try:
-            setattr(client, "name", getattr(client, "name", address_or_ble_device.name))
-        except AttributeError:
-            pass
-
-        async with Transport(client) as transport:
+    client = await establish_connection(
+        BleakClientWithServiceCache,
+        address_or_ble_device,
+        name=address_or_ble_device.name or address_or_ble_device.address,
+        max_attempts=4,
+        timeout=timeout,
+    )
+    
+    try:
+        async with Transport(client, timeout=timeout) as transport:
             yield transport
+    finally:
+        if client.is_connected:
+            await client.disconnect()
 
 
 class Transport:
@@ -97,8 +103,8 @@ class Transport:
         if self.is_started:
             return
 
-        if not self.client.is_connected:
-            await self.client.connect(timeout=self.timeout)
+    if not self.client.is_connected:
+        raise RuntimeError("BLE client is not connected")
 
         if self.client._backend.__class__.__name__ == "BleakClientBlueZDBus":  # type: ignore
             await self.client._backend._acquire_mtu()  # type: ignore
