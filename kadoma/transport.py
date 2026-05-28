@@ -70,7 +70,7 @@ async def get_transport(
         max_attempts=4,
         timeout=timeout,
     )
-    
+
     try:
         async with Transport(client, timeout=timeout) as transport:
             yield transport
@@ -103,8 +103,8 @@ class Transport:
         if self.is_started:
             return
 
-    if not self.client.is_connected:
-        raise RuntimeError("BLE client is not connected")
+        if not self.client.is_connected:
+            raise RuntimeError("BLE client is not connected")
 
         if self.client._backend.__class__.__name__ == "BleakClientBlueZDBus":  # type: ignore
             await self.client._backend._acquire_mtu()  # type: ignore
